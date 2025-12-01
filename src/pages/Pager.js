@@ -4,6 +4,7 @@ import socket from "../socket";
 import { FaPager } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa6";
 import { FaPowerOff } from "react-icons/fa6";
+import { IoIosSend } from "react-icons/io";
 import ROUTES from "../router/ROUTES";
 
 const Logout = () => {
@@ -27,10 +28,16 @@ const Logout = () => {
 const Links = () => {
   return (
     <>
-      <a href="/" className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white">
+      <a
+        href="/"
+        className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white"
+      >
         <p>COMMUNITY</p>
       </a>
-      <a href="/" className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white">
+      <a
+        href="/"
+        className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white"
+      >
         <p>ABOUT</p>
       </a>
     </>
@@ -116,15 +123,28 @@ const MessageInput = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        placeholder="Type a message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        autoFocus
-      />
-      <button type="submit">Send</button>
-    </form>
+    <div className="border-[#831d8d] border-t bg-[#2c0e2f]">
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <textarea
+          className="bg-[transparent] outline-none text-base text-white placeholder:text-[#b1b1b1] px-4 py-3 min-h-[100px]"
+          placeholder="Type a message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          autoFocus
+        />
+        <div className="flex items-end justify-end border-t border-[#831d8d]">
+          <div className="pr-2 py-2">
+            <button
+              type="submit"
+              className="flex items-center justify-center gap-2 text-white px-5 py-2 bg-[#2d4fb5] rounded-full"
+            >
+              <p>Send</p>
+              <IoIosSend className="text-xl" />
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 
@@ -142,11 +162,9 @@ function Messages() {
 
   return (
     <div>
-      {messages.map((m, index) => (
-        <div key={index}>
-          <strong>{m.userName}:</strong> {m.msg}
-        </div>
-      ))}
+      {messages.map((message, index) => {
+        return <div key={index}>{message.msg}</div>;
+      })}
     </div>
   );
 }
@@ -196,7 +214,7 @@ const Pager = () => {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3]">
+    <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col">
       <header className="border-[#B3B3B3] border-b bg-[#2D2D2D] flex justify-between">
         <div className="flex items-center">
           <div className="border-r border-[#B3B3B3] px-5 py-2 flex items-center">
@@ -212,9 +230,35 @@ const Pager = () => {
           <Logout />
         </div>
       </header>
-      <ListConnectedUsers roomId={id} />
-      <MessageInput />
-      <Messages />
+      <div className="flex-grow flex min-h-0">
+        <div className="border-r border-[#B3B3B3] flex-1 min-w-[320px] flex flex-col">
+          <div className="flex-grow overflow-y-auto pb-5">
+            <Messages />
+          </div>
+          <MessageInput />
+        </div>
+        <div className="w-[320px] flex-1 min-w-[320px] max-w-[462px] overflow-y-auto">
+          <div className="border-[#00ccff] border-b bg-[#368194] grid grid-cols-2">
+            <div className="px-5 py-2">
+              <div>
+                <p className="text-[#f0f0f0da] text-xs font-semibold">
+                  Room ID (Joined)
+                </p>
+              </div>
+              <p className="truncate text-white font-bold">{id}</p>
+            </div>
+            <div className="border-l border-[#00ccff] px-5 py-2">
+              <div>
+                <p className="text-[#f0f0f0da] text-xs font-semibold">
+                  Your username is
+                </p>
+              </div>
+              <p className="truncate text-white font-bold">{username}</p>
+            </div>
+          </div>
+          <ListConnectedUsers roomId={id} />
+        </div>
+      </div>
     </div>
   );
 };
