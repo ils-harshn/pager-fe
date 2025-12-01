@@ -1,6 +1,68 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import socket from "../socket";
+import { FaPager } from "react-icons/fa6";
+import { FaClock } from "react-icons/fa6";
+import { FaPowerOff } from "react-icons/fa6";
+import ROUTES from "../router/ROUTES";
+
+const Logout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    socket.disconnect();
+    navigate(ROUTES.INDEX);
+  };
+
+  return (
+    <button
+      onClick={handleLogout}
+      className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white"
+    >
+      <FaPowerOff className="text-xl" />
+    </button>
+  );
+};
+
+const Links = () => {
+  return (
+    <>
+      <a href="/" className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white">
+        <p>COMMUNITY</p>
+      </a>
+      <a href="/" className="px-5 py-2 border-l border-[#B3B3B3] flex items-center text-[#f0f0f0da] hover:text-white">
+        <p>ABOUT</p>
+      </a>
+    </>
+  );
+};
+
+const Time = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <div className="px-5 py-2 border-l border-[#B3B3B3] flex items-center">
+        <FaClock className="text-xl text-[#f0f0f0da]" />
+      </div>
+      <div className="px-5 py-2 border-l border-[#B3B3B3] w-[110px]">
+        <p className="text-xs text-[#f0f0f0da] text-center">
+          {time.toLocaleTimeString([], { hour12: false })}
+        </p>
+        <p className="text-xs text-[#f0f0f0da] text-center">
+          {time.toLocaleDateString()}
+        </p>
+      </div>
+    </>
+  );
+};
 
 const ListConnectedUsers = ({ roomId }) => {
   const [users, setUsers] = useState([]);
@@ -114,20 +176,42 @@ const Pager = () => {
     };
   }, [id, username]);
 
-  if (!connected) {
+  if (!connected || socket.disconnected) {
     return (
-      <div>
-        Connecting to room {id} as {username}...
+      <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col items-center justify-center gap-2">
+        {!connected ? (
+          <p className="text-white">
+            Connecting to room{" "}
+            <span className="text-[#1596ff] font-bold">{id}</span> as{" "}
+            <span className="text-[#FFD43B] font-bold">{username}</span>...
+          </p>
+        ) : null}
+        {socket.disconnected ? (
+          <p className="text-white">
+            Disconnected. Please refresh the page to reconnect.
+          </p>
+        ) : null}
       </div>
     );
   }
 
-  if (socket.disconnected) {
-    return <div>Disconnected. Please refresh the page to reconnect.</div>;
-  }
-
   return (
-    <div>
+    <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3]">
+      <header className="border-[#B3B3B3] border-b bg-[#2D2D2D] flex justify-between">
+        <div className="flex items-center">
+          <div className="border-r border-[#B3B3B3] px-5 py-2 flex items-center">
+            <FaPager className="text-4xl text-[#FFD43B]" />
+          </div>
+          <div className="px-5 py-2 flex items-center border-r border-[#B3B3B3]">
+            <h3 className="text-3xl text-[#1596ff] font-kosugi">Pager</h3>
+          </div>
+        </div>
+        <div className="flex">
+          <Links />
+          <Time />
+          <Logout />
+        </div>
+      </header>
       <ListConnectedUsers roomId={id} />
       <MessageInput />
       <Messages />

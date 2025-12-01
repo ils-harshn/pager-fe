@@ -32,7 +32,7 @@ const Index = () => {
           <div className="px-5 py-2">
             <h3 className="text-5xl text-[#1596ff] font-kosugi">Pager</h3>
           </div>
-          <div className="border-l px-10 py-2">
+          <div className="border-l border-[#B3B3B3] px-10 py-2">
             <FaPager className="text-5xl text-[#FFD43B]" />
           </div>
         </div>
