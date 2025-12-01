@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../router/ROUTES";
+import { FaPager } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+import { FaDiscord } from "react-icons/fa6";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,24 +22,74 @@ const Index = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Room ID"
-        name="roomId"
-        value={inputState.roomId}
-        onChange={handleInputChange}
-        autoFocus
-      />
-      <input
-        type="text"
-        placeholder="Username"
-        name="userName"
-        value={inputState.userName}
-        onChange={handleInputChange}
-      />
-      <button type="submit">Join Room</button>
-    </form>
+    <div className="w-[100vw] h-[100dvh] justify-center items-center grid [grid-template-columns:1fr_auto_1fr] [grid-template-rows:1fr_auto_1fr]">
+      <div className="border-[#B3B3B3] border-r border-b w-full h-full"></div>
+      <div className="border-[#B3B3B3] border-b w-full h-full"></div>
+      <div className="border-[#B3B3B3] border-l border-b w-full h-full"></div>
+      <div className="border-[#B3B3B3] border-b w-full h-full"></div>
+      <div className="min-w-[300px] max-w-[620px] w-[100vw] border-[#B3B3B3] border-b">
+        <div className="border-[#B3B3B3] border-b border-l border-r bg-[#2D2D2D] flex justify-between">
+          <div className="px-5 py-2">
+            <h3 className="text-5xl text-[#1596ff] font-kosugi">Pager</h3>
+          </div>
+          <div className="border-l px-10 py-2">
+            <FaPager className="text-5xl text-[#FFD43B]" />
+          </div>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 border-b border-[#D97F26] border-l border-r">
+            <input
+              className="px-5 py-3 bg-[#3A2410] outline-none text-lg text-white placeholder:text-[#b1b1b1] border-r border-[#D97F26]"
+              type="text"
+              placeholder="Room ID"
+              name="roomId"
+              value={inputState.roomId}
+              onChange={handleInputChange}
+              autoFocus
+            />
+            <input
+              className="px-5 py-3 bg-[#3A2410] outline-none text-lg text-white placeholder:text-[#b1b1b1]"
+              type="text"
+              placeholder="Username"
+              name="userName"
+              value={inputState.userName}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex items-center justify-between border-l border-r border-[#B3B3B3]">
+            <div className="text-white px-5 py-3">
+              <p>To join a pager, provide the details requested above.</p>
+            </div>
+            <div className="px-2 py-2">
+              <button
+                className="bg-[#03B0D5] px-5 py-2 text-white rounded-full text-nowrap"
+                type="submit"
+              >
+                Join Room
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div className="flex items-center justify-between border-l border-r border-t border-[#B3B3B3] h-[52px]"></div>
+        <div className="flex items-center justify-between border-l border-r border-[#B3B3B3] h-[52px]"></div>
+        <div className="border-l border-r border-t border-[#B3B3B3]">
+          <div className="text-white px-5 py-3 text-center">
+            <p>Support is always welcome. Get in touch</p>
+          </div>
+          <div className="text-white px-5 pb-3 flex items-center justify-center gap-2">
+            <FaGithub className="text-white text-2xl" />
+            <FaLinkedin className="text-white text-2xl" />
+            <FaFacebook className="text-white text-2xl" />
+            <FaDiscord className="text-white text-2xl" />
+          </div>
+        </div>
+      </div>
+      <div className="border-[#B3B3B3] border-b w-full h-full"></div>
+      <div className="border-[#B3B3B3] border-r w-full h-full"></div>
+      <div className="border-[#B3B3B3] w-full h-full"></div>
+      <div className="border-[#B3B3B3] border-l w-full h-full"></div>
+    </div>
   );
 };
 
