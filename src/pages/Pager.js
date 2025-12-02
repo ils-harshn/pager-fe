@@ -71,8 +71,9 @@ const Time = () => {
   );
 };
 
-const ListConnectedUsers = ({ roomId }) => {
+const ListConnectedUsers = ({ roomId, loggedUser }) => {
   const [users, setUsers] = useState([]);
+  console.log("Logged User in ListConnectedUsers:", loggedUser, users);
 
   useEffect(() => {
     const handleUpdateUsers = (data) => {
@@ -102,14 +103,27 @@ const ListConnectedUsers = ({ roomId }) => {
   }, [roomId]);
 
   return (
-    <div>
-      <h3>Connected Users:</h3>
-      <ul>
-        {users.map((user, index) => (
-          <li key={index}>{user.username}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="border-[#FFD43B] border-b bg-[#b7c12a] px-5 py-2">
+        <h3 className="text-white font-bold">Room Members</h3>
+      </div>
+      <div>
+        <ul>
+          {users.map((user, index) => (
+            <li
+              key={index}
+              className="border-[#B3B3B3] border-b flex justify-between items-center"
+            >
+              <div className="px-5 py-2">
+                <p className="text-white">
+                  {loggedUser?.id === user?.id ? "You" : user.username}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };
 
@@ -151,8 +165,8 @@ const MessageInput = () => {
 function Messages() {
   const [messages, setMessages] = useState([]);
   useEffect(() => {
-    function handleMessage({ userName, msg }) {
-      setMessages((prevMessages) => [...prevMessages, { userName, msg }]);
+    function handleMessage({ username, msg }) {
+      setMessages((prevMessages) => [...prevMessages, { username, msg }]);
     }
     socket.on("message", handleMessage);
     return () => {
@@ -204,7 +218,7 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
               className="border-[#B3B3B3] border-b flex justify-between items-center"
             >
               <div className="px-5 py-2">
-                <p className="text-white">{request.userName}</p>
+                <p className="text-white">{request.username}</p>
               </div>
               <div className="flex items-center gap-2 pr-1">
                 <button
@@ -240,7 +254,7 @@ const Pager = () => {
   useEffect(() => {
     function handleConnect() {
       setConnected(true);
-      socket.emit("joinRoom", { roomId: id, userName: username });
+      socket.emit("joinRoom", { roomId: id, username: username });
     }
 
     function handleDisconnect() {
@@ -252,10 +266,10 @@ const Pager = () => {
       setJoinedRoom(true);
     }
 
-    function onJoinRequest({ userName, socketId }) {
+    function onJoinRequest({ username, socketId }) {
       setJoinRequests((prevRequests) => [
         ...prevRequests,
-        { userName, socketId },
+        { username, socketId },
       ]);
     }
 
@@ -344,13 +358,16 @@ const Pager = () => {
                   Your username is
                 </p>
               </div>
-              <p className="truncate text-white font-bold">{user.userName}</p>
+              <p className="truncate text-white font-bold">{user.username}</p>
             </div>
           </div>
+          <ListConnectedUsers roomId={id} loggedUser={user} />
           {user?.owner && joinRequests?.length ? (
-            <ShowJoinRequests requests={joinRequests} setJoinRequests={setJoinRequests} />
+            <ShowJoinRequests
+              requests={joinRequests}
+              setJoinRequests={setJoinRequests}
+            />
           ) : null}
-          <ListConnectedUsers roomId={id} />
         </div>
       </div>
     </div>

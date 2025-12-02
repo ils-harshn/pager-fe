@@ -9,7 +9,7 @@ import { FaDiscord } from "react-icons/fa6";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [inputState, setInputState] = useState({ roomId: "", userName: "" });
+  const [inputState, setInputState] = useState({ roomId: "", username: "" });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +18,7 @@ const Index = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(ROUTES.GET_PAGER(inputState.roomId, inputState.userName));
+    navigate(ROUTES.GET_PAGER(inputState.roomId, inputState.username));
   };
 
   return (
@@ -51,8 +51,8 @@ const Index = () => {
               className="px-5 py-3 bg-[#3A2410] outline-none text-lg text-white placeholder:text-[#b1b1b1]"
               type="text"
               placeholder="Username"
-              name="userName"
-              value={inputState.userName}
+              name="username"
+              value={inputState.username}
               onChange={handleInputChange}
             />
           </div>
