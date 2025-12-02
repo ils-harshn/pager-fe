@@ -177,9 +177,65 @@ function Messages() {
   );
 }
 
+const ShowJoinRequests = ({ requests, setJoinRequests }) => {
+  const approveJoin = (socketId) => {
+    socket.emit("approveJoin", { socketId });
+    setJoinRequests((prevRequests) =>
+      prevRequests.filter((request) => request.socketId !== socketId)
+    );
+  };
+
+  const rejectJoin = (socketId) => {
+    setJoinRequests((prevRequests) =>
+      prevRequests.filter((request) => request.socketId !== socketId)
+    );
+  };
+
+  return (
+    <>
+      <div className="border-[#FFD43B] border-b bg-[#b7c12a] px-5 py-2">
+        <h3 className="text-white font-bold">Join Requests</h3>
+      </div>
+      <div>
+        <ul>
+          {requests.map((request, index) => (
+            <li
+              key={index}
+              className="border-[#B3B3B3] border-b flex justify-between items-center"
+            >
+              <div className="px-5 py-2">
+                <p className="text-white">{request.userName}</p>
+              </div>
+              <div className="flex items-center gap-2 pr-1">
+                <button
+                  onClick={() => approveJoin(request.socketId)}
+                  className="bg-[#03d506] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold"
+                  type="submit"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => rejectJoin(request.socketId)}
+                  className="bg-[#d53703] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold"
+                  type="submit"
+                >
+                  Reject
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+};
+
 const Pager = () => {
   const { id, username } = useParams();
   const [connected, setConnected] = useState(false);
+  const [joinedRoom, setJoinedRoom] = useState(false);
+  const [user, setUser] = useState(null);
+  const [joinRequests, setJoinRequests] = useState([]);
 
   useEffect(() => {
     function handleConnect() {
@@ -191,13 +247,29 @@ const Pager = () => {
       setConnected(false);
     }
 
+    function hasJoinedRoom(data) {
+      setUser(data);
+      setJoinedRoom(true);
+    }
+
+    function onJoinRequest({ userName, socketId }) {
+      setJoinRequests((prevRequests) => [
+        ...prevRequests,
+        { userName, socketId },
+      ]);
+    }
+
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
+    socket.on("joinedRoom", hasJoinedRoom);
+    socket.on("joinrequest", onJoinRequest);
 
     socket.connect();
     return () => {
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
+      socket.off("joinedRoom", hasJoinedRoom);
+      socket.off("joinrequest", onJoinRequest);
       socket.disconnect();
     };
   }, [id, username]);
@@ -217,6 +289,17 @@ const Pager = () => {
             Disconnected. Please refresh the page to reconnect.
           </p>
         ) : null}
+      </div>
+    );
+  }
+
+  if (!joinedRoom) {
+    return (
+      <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col items-center justify-center gap-2">
+        <p className="text-white">
+          Waiting for the owner to let you in the room{" "}
+          <span className="text-[#1596ff] font-bold">{id}</span>...
+        </p>
       </div>
     );
   }
@@ -261,9 +344,12 @@ const Pager = () => {
                   Your username is
                 </p>
               </div>
-              <p className="truncate text-white font-bold">{username}</p>
+              <p className="truncate text-white font-bold">{user.userName}</p>
             </div>
           </div>
+          {user?.owner && joinRequests?.length ? (
+            <ShowJoinRequests requests={joinRequests} setJoinRequests={setJoinRequests} />
+          ) : null}
           <ListConnectedUsers roomId={id} />
         </div>
       </div>
