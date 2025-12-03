@@ -7,6 +7,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import ROUTES from "../router/ROUTES";
 import MessageInput from "../components/MessageInput";
 import Messages from "../components/Messages";
+import config from "../config";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
 
     fetch(
       `${
-        process.env.REACT_APP_API_URL
+        config.uri
       }/get-connected-users?roomId=${encodeURIComponent(roomId)}`
     )
       .then((res) => {

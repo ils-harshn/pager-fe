@@ -1,6 +1,8 @@
+import config from "../config";
+
 const { io } = require("socket.io-client");
 
-const socket = io(process.env.REACT_APP_API_URL, {
+const socket = io(config.uri, {
   autoConnect: false,
 });
 
