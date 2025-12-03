@@ -116,13 +116,19 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
                 className="border-[#B3B3B3] border-b flex justify-between items-center"
               >
                 <div className="px-5 py-2">
-                  <p className="text-white">{user.username}{user?.owner ? " (Moderator)" : ""}</p>
+                  <p className="text-white">
+                    {user.username}
+                    {user?.owner ? " (Moderator)" : ""}
+                  </p>
                 </div>
               </li>
             ))}
           <li className="border-[#B3B3B3] border-b flex justify-between items-center">
             <div className="px-5 py-2">
-              <p className="text-white">{loggedUser.username} (You){loggedUser?.owner ? " (Moderator)": ""}</p>
+              <p className="text-white">
+                {loggedUser.username} (You)
+                {loggedUser?.owner ? " (Moderator)" : ""}
+              </p>
             </div>
           </li>
         </ul>
@@ -208,6 +214,18 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
       prevRequests.filter((request) => request.socketId !== socketId)
     );
   };
+
+  useEffect(() => {
+    const handleJoinRequestCancelled = ({ socketId }) => {
+      setJoinRequests((prevRequests) =>
+        prevRequests.filter((request) => request.socketId !== socketId)
+      );
+    };
+    socket.on("joinrequestcancelled", handleJoinRequestCancelled);
+    return () => {
+      socket.off("joinrequestcancelled", handleJoinRequestCancelled);
+    };
+  }, []);
 
   return (
     <>
