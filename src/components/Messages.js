@@ -1,15 +1,39 @@
 import { useEffect, useState, useRef } from "react";
 import socket from "../socket";
 
-function Messages() {
+function Messages({ messagesContainerRef }) {
   const [messages, setMessages] = useState([]);
+
+  const isUserAtBottom = () => {
+    if (!messagesContainerRef.current) return false;
+    const { scrollTop, scrollHeight, clientHeight } =
+      messagesContainerRef.current;
+    return scrollHeight - scrollTop - clientHeight < 100;
+  };
+
+  const scrollToBottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     function handleMessage({ id, username, msg, at }) {
+      const wasAtBottom = isUserAtBottom();
       setMessages((prevMessages) => [
         ...prevMessages,
         { id, username, msg, at },
       ]);
+
+      if (wasAtBottom) {
+        // Use setTimeout to wait for DOM update
+        setTimeout(() => {
+          scrollToBottom();
+        }, 0);
+      }
     }
     socket.on("message", handleMessage);
     return () => {
