@@ -73,7 +73,6 @@ const Time = () => {
 
 const ListConnectedUsers = ({ roomId, loggedUser }) => {
   const [users, setUsers] = useState([]);
-  console.log("Logged User in ListConnectedUsers:", loggedUser, users);
 
   useEffect(() => {
     const handleUpdateUsers = (data) => {
@@ -104,23 +103,28 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
 
   return (
     <>
-      <div className="border-[#FFD43B] border-b bg-[#b7c12a] px-5 py-2">
+      <div className="border-[#f23bff] border-b bg-[#992ac1] px-5 py-2">
         <h3 className="text-white font-bold">Room Members</h3>
       </div>
       <div>
         <ul>
-          {users.map((user, index) => (
-            <li
-              key={index}
-              className="border-[#B3B3B3] border-b flex justify-between items-center"
-            >
-              <div className="px-5 py-2">
-                <p className="text-white">
-                  {loggedUser?.id === user?.id ? "You" : user.username}
-                </p>
-              </div>
-            </li>
-          ))}
+          {users
+            .filter((user) => user.id !== loggedUser?.id)
+            .map((user, index) => (
+              <li
+                key={index}
+                className="border-[#B3B3B3] border-b flex justify-between items-center"
+              >
+                <div className="px-5 py-2">
+                  <p className="text-white">{user.username}{user?.owner ? " (Moderator)" : ""}</p>
+                </div>
+              </li>
+            ))}
+          <li className="border-[#B3B3B3] border-b flex justify-between items-center">
+            <div className="px-5 py-2">
+              <p className="text-white">{loggedUser.username} (You){loggedUser?.owner ? " (Moderator)": ""}</p>
+            </div>
+          </li>
         </ul>
       </div>
     </>
