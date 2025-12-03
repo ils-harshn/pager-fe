@@ -249,21 +249,24 @@ const Pager = () => {
     };
   }, [id, username]);
 
-  if (!connected || socket.disconnected) {
+  if (!connected) {
     return (
       <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col items-center justify-center gap-2">
-        {!connected ? (
-          <p className="text-white">
-            Connecting to room{" "}
-            <span className="text-[#1596ff] font-bold">{id}</span> as{" "}
-            <span className="text-[#FFD43B] font-bold">{username}</span>...
-          </p>
-        ) : null}
-        {socket.disconnected ? (
-          <p className="text-white">
-            Disconnected. Please refresh the page to reconnect.
-          </p>
-        ) : null}
+        <p className="text-white">
+          Connecting to room{" "}
+          <span className="text-[#1596ff] font-bold">{id}</span> as{" "}
+          <span className="text-[#FFD43B] font-bold">{username}</span>...
+        </p>
+      </div>
+    );
+  }
+
+  if (socket.disconnected && connected) {
+    return (
+      <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col items-center justify-center gap-2">
+        <p className="text-white">
+          Disconnected. Please refresh the page to reconnect.
+        </p>
       </div>
     );
   }
