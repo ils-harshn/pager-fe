@@ -3,7 +3,6 @@ import socket from "../socket";
 
 function Messages() {
   const [messages, setMessages] = useState([]);
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     function handleMessage({ id, username, msg, at }) {
@@ -68,36 +67,45 @@ function Messages() {
 
   const groupedMessages = groupMessages(messages);
 
-  return (
-    <div className="px-4 py-4">
-      {groupedMessages.map((group, groupIndex) => {
-        const { time, dateStr } = formatTime(group.at);
-        return (
-          <div key={groupIndex} className="mb-4">
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="text-[#FFD43B] font-semibold text-sm">
-                {console.log(group.id, socket.id)}
-                {group?.id === socket.id ? "You" : group.username}
-              </span>
-              <span className="text-[#b1b1b1] text-xs">{time}</span>
-              <span className="text-[#888888] text-xs">{dateStr}</span>
+  return groupedMessages.map((group, groupIndex) => {
+    const { time, dateStr } = formatTime(group.at);
+    return (
+      <div
+        key={groupIndex}
+        className={`last:mb-4 pt-2 ${
+          group?.id === socket.id ? "bg-[#312a0f]" : "bg-[#0e320e]"
+        }`}
+      >
+        <div className="flex items-baseline gap-2 mb-3 px-3">
+          <span
+            className={`${
+              group?.id === socket.id ? "text-[#c7a62d]" : "text-[#32b834]"
+            } font-semibold text-xs`}
+          >
+            {group?.id === socket.id ? "You" : group.username}
+          </span>
+          <span className="text-[#ffffff] text-[10px]">{time}</span>
+          <span className="text-[#ffffff] text-[10px]">{dateStr}</span>
+        </div>
+        <div
+          className={`border-b ${
+            group?.id === socket.id ? "border-[#d4af28]" : "border-[#2baf2d]"
+          } px-3 pb-2`}
+        >
+          {group.messages.map((message, msgIndex) => (
+            <div
+              key={msgIndex}
+              className={`${
+                socket.id === group.id ? "text-[#FFD43B]" : "text-[#3bff3e]"
+              } font-semibold text-base whitespace-pre-wrap break-words mb-1`}
+            >
+              {message.msg}
             </div>
-            <div className="pl-1">
-              {group.messages.map((message, msgIndex) => (
-                <div
-                  key={msgIndex}
-                  className="text-white text-base whitespace-pre-wrap break-words mb-1"
-                >
-                  {message.msg}
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-      <div ref={messagesEndRef} />
-    </div>
-  );
+          ))}
+        </div>
+      </div>
+    );
+  });
 }
 
 export default Messages;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import socket from "../socket";
 import { FaPager } from "react-icons/fa6";
@@ -205,6 +205,7 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
 
 const Pager = () => {
   const { id, username } = useParams();
+  const messagesContainerRef = useRef(null);
   const [connected, setConnected] = useState(false);
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [user, setUser] = useState(null);
@@ -296,8 +297,8 @@ const Pager = () => {
       </header>
       <div className="flex-grow flex min-h-0">
         <div className="border-r border-[#B3B3B3] flex-1 min-w-[320px] flex flex-col">
-          <div className="flex-grow overflow-y-auto pb-5">
-            <Messages />
+          <div className="flex-grow overflow-y-auto pb-5" ref={messagesContainerRef}>
+            <Messages messagesContainerRef={messagesContainerRef} />
           </div>
           <MessageInput />
         </div>
