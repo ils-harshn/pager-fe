@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import socket from "../socket";
 import { SOCKET_EVENTS } from "../constants";
+import { generateAvatar } from "../utils";
 
-const useSocket = (roomId, username) => {
+const useSocket = (roomId, username, status = '') => {
   const [connected, setConnected] = useState(false);
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [user, setUser] = useState(null);
@@ -10,9 +11,16 @@ const useSocket = (roomId, username) => {
   const [kicked, setKicked] = useState(false);
 
   useEffect(() => {
+    const avatar = generateAvatar(username);
+    
     function handleConnect() {
       setConnected(true);
-      socket.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, username });
+      socket.emit(SOCKET_EVENTS.JOIN_ROOM, { 
+        roomId, 
+        username,
+        avatar,
+        status 
+      });
     }
 
     function handleDisconnect() {
@@ -52,7 +60,7 @@ const useSocket = (roomId, username) => {
       socket.off(SOCKET_EVENTS.USER_KICKED, onUserKicked);
       socket.disconnect();
     };
-  }, [roomId, username]);
+  }, [roomId, username, status]);
 
   return {
     connected,

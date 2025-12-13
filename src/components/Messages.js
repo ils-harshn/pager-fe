@@ -23,11 +23,11 @@ function Messages({ messagesContainerRef }) {
   };
 
   useEffect(() => {
-    function handleMessage({ id, username, msg, at }) {
+    function handleMessage({ id, username, msg, at, avatar }) {
       const wasAtBottom = isUserAtBottom();
       setMessages((prevMessages) => [
         ...prevMessages,
-        { id, username, msg, at },
+        { id, username, msg, at, avatar },
       ]);
 
       if (wasAtBottom) {
@@ -62,6 +62,12 @@ function Messages({ messagesContainerRef }) {
         }`}
       >
         <div className="flex items-baseline gap-2 mb-3 px-3">
+          <div 
+            className="w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+            style={{ backgroundColor: group.avatar?.color }}
+          >
+            {group.avatar?.emoji}
+          </div>
           <span
             className={`${
               group?.id === socket.id ? "text-[#c7a62d]" : "text-[#32b834]"

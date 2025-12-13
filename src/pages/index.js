@@ -2,14 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../router/ROUTES";
 import { FaPager } from "react-icons/fa6";
-import { FaGithub } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa";
 import { FaDiscord } from "react-icons/fa6";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [inputState, setInputState] = useState({ roomId: "", username: "" });
+  const [inputState, setInputState] = useState({ 
+    roomId: "", 
+    username: "",
+    status: "" 
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +20,10 @@ const Index = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(ROUTES.GET_PAGER(inputState.roomId, inputState.username));
+    const params = new URLSearchParams({
+      status: inputState.status || ""
+    });
+    navigate(`${ROUTES.GET_PAGER(inputState.roomId, inputState.username)}?${params}`);
   };
 
   return (
@@ -45,6 +50,7 @@ const Index = () => {
               name="roomId"
               value={inputState.roomId}
               onChange={handleInputChange}
+              required
               autoFocus
             />
             <input
@@ -54,15 +60,27 @@ const Index = () => {
               name="username"
               value={inputState.username}
               onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="border-b border-[#D97F26] border-l border-r">
+            <input
+              className="px-5 py-3 bg-[#3A2410] outline-none text-base text-white placeholder:text-[#b1b1b1] w-full"
+              type="text"
+              placeholder="Status message (optional) - e.g. 'Ready to chat!'"
+              name="status"
+              value={inputState.status}
+              onChange={handleInputChange}
+              maxLength={50}
             />
           </div>
           <div className="flex items-center justify-between border-l border-r border-[#B3B3B3]">
             <div className="text-white px-5 py-3">
-              <p>To join a pager, provide the details requested above.</p>
+              <p className="text-sm">Join a temporary chat room. We'll generate a fun avatar for you!</p>
             </div>
             <div className="px-2 py-2">
               <button
-                className="bg-[#03B0D5] px-5 py-2 text-white rounded-full text-nowrap"
+                className="bg-[#03B0D5] px-5 py-2 text-white rounded-full text-nowrap hover:bg-[#0299bd]"
                 type="submit"
               >
                 Join Room

@@ -40,8 +40,14 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
               key={index}
               className="border-[#B3B3B3] border-b flex justify-between items-center"
             >
-              <div className="px-5 py-2">
-                <p className="text-white">{request.username}</p>
+              <div className="px-5 py-2 flex items-center gap-3">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                  style={{ backgroundColor: request.avatar?.color }}
+                >
+                  {request.avatar?.emoji}
+                </div>
+                <p className="text-white font-semibold">{request.username}</p>
               </div>
               <div className="flex items-center gap-2 pr-1">
                 <button

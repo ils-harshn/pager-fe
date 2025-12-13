@@ -47,11 +47,22 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
                 key={index}
                 className="border-[#B3B3B3] border-b flex justify-between items-center"
               >
-                <div className="px-5 py-2">
-                  <p className="text-white">
-                    {user.username}
-                    {user?.owner ? " (Moderator)" : ""}
-                  </p>
+                <div className="px-5 py-2 flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                    style={{ backgroundColor: user.avatar?.color }}
+                  >
+                    {user.avatar?.emoji}
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold">
+                      {user.username}
+                      {user?.owner ? " (Moderator)" : ""}
+                    </p>
+                    {user.status && (
+                      <p className="text-gray-300 text-xs italic">{user.status}</p>
+                    )}
+                  </div>
                 </div>
                 {loggedUser?.owner && !user?.owner && (
                   <div className="pr-2">
@@ -68,11 +79,22 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
               </li>
             ))}
           <li className="border-[#B3B3B3] border-b flex justify-between items-center">
-            <div className="px-5 py-2">
-              <p className="text-white">
-                {loggedUser.username} (You)
-                {loggedUser?.owner ? " (Moderator)" : ""}
-              </p>
+            <div className="px-5 py-2 flex items-center gap-3">
+              <div 
+                className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                style={{ backgroundColor: loggedUser.avatar?.color }}
+              >
+                {loggedUser.avatar?.emoji}
+              </div>
+              <div>
+                <p className="text-white font-semibold">
+                  {loggedUser.username} (You)
+                  {loggedUser?.owner ? " (Moderator)" : ""}
+                </p>
+                {loggedUser.status && (
+                  <p className="text-gray-300 text-xs italic">{loggedUser.status}</p>
+                )}
+              </div>
             </div>
           </li>
         </ul>

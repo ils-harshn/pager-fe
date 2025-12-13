@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import socket from "../socket";
 import MessageInput from "../components/MessageInput";
 import Messages from "../components/Messages";
@@ -15,9 +15,11 @@ import { useSocket } from "../hooks";
 
 const Pager = () => {
   const { id, username } = useParams();
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get('status') || '';
   const messagesContainerRef = useRef(null);
   const { connected, joinedRoom, user, joinRequests, setJoinRequests, kicked } =
-    useSocket(id, username);
+    useSocket(id, username, status);
 
   if (kicked) {
     return <KickedState />;

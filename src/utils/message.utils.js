@@ -29,6 +29,7 @@ export const groupMessages = (messages) => {
         id: message.id,
         username: message.username,
         at: message.at,
+        avatar: message.avatar,
         messages: [message],
       };
       groups.push(currentGroup);
