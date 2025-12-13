@@ -12,3 +12,35 @@
 body {
   background-color: #1E1D20;
 }
+
+/* Custom Scrollbar Styles */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c0e2f;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #831d8d;
+  border-radius: 10px;
+  border: 2px solid #2c0e2f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a842b5;
+}
+
+::-webkit-scrollbar-corner {
+  background: #2c0e2f;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #831d8d #2c0e2f;
+}

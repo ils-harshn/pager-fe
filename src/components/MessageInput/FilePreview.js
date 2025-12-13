@@ -14,7 +14,7 @@ const FilePreview = ({ fileObj, onRemove }) => {
       </button>
 
       {isImage ? (
-        <div className="w-14 h-14 rounded-lg border border-[#831d8d] hover:border-[#a842b5] overflow-hidden bg-black/40 transition-all">
+        <div className="w-24 h-24 rounded-lg border border-[#831d8d] hover:border-[#a842b5] overflow-hidden bg-black/40 transition-all">
           {fileObj.preview ? (
             <img
               src={fileObj.preview}
@@ -36,7 +36,7 @@ const FilePreview = ({ fileObj, onRemove }) => {
           )}
         </div>
       ) : (
-        <div className="w-14 h-14 bg-[#2c0e2f] rounded-lg border border-[#831d8d] hover:border-[#a842b5] transition-all flex flex-col items-center justify-center gap-1 p-2 relative">
+        <div className="w-24 h-24 bg-[#2c0e2f] rounded-lg border border-[#831d8d] hover:border-[#a842b5] transition-all flex flex-col items-center justify-center gap-1 p-2 relative">
           <MdInsertDriveFile className="text-3xl text-white/70" />
           <p
             className="text-white text-[9px] truncate w-full text-center px-1"
