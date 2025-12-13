@@ -9,7 +9,7 @@ const MessageBubble = ({ timeGroup, isOwnMessage }) => {
     : "bg-gradient-to-br from-green-600/20 to-green-700/30 border border-green-600/30 ml-2";
 
   return (
-    <div className={`flex flex-col gap-1 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
+    <div className={`w-full flex flex-col gap-1 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
       <div className={`rounded-2xl px-4 py-2.5 max-w-[85%] ${bubbleClasses} backdrop-blur-sm shadow-lg`}>
         {timeGroup.messages.map((message, msgIndex) => (
           <MessageContent 
