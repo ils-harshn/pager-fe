@@ -27,6 +27,13 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
     clearFiles,
   } = useFileUpload(roomId);
 
+  const handleRemoveFileWrapper = (fileId) => {
+    handleRemoveFile(fileId);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const { textareaRef } = useAutoResizeTextarea(message, MAX_HEIGHT);
 
   const {
@@ -83,7 +90,7 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
       <form onSubmit={handleSubmit} className="flex flex-col">
         <FileAttachmentsList 
           selectedFiles={selectedFiles} 
-          onRemoveFile={handleRemoveFile} 
+          onRemoveFile={handleRemoveFileWrapper} 
         />
         
         <MessageTextarea
