@@ -10,7 +10,7 @@ const MessageBubble = ({ timeGroup, isOwnMessage }) => {
 
   return (
     <div className={`w-full flex flex-col gap-1 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
-      <div className={`rounded-2xl px-4 py-2.5 max-w-[85%] ${bubbleClasses} backdrop-blur-sm shadow-lg`}>
+      <div className={`rounded-2xl px-2.5 py-2.5 max-w-[85%] ${bubbleClasses} backdrop-blur-sm shadow-lg`}>
         {timeGroup.messages.map((message, msgIndex) => (
           <MessageContent 
             key={msgIndex} 

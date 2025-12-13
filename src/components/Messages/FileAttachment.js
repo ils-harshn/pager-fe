@@ -59,7 +59,7 @@ const FileAttachment = ({ file }) => {
       <>
         <div 
           onClick={openModal}
-          className="inline-block mr-2 mb-2 cursor-pointer"
+          className="inline-block cursor-pointer"
         >
           <div className="w-24 h-24 rounded-lg border border-white/30 hover:border-white/50 transition-all overflow-hidden bg-black/40">
             <img
@@ -83,7 +83,7 @@ const FileAttachment = ({ file }) => {
     <>
       <div
         onClick={openModal}
-        className="inline-block mr-2 mb-2 cursor-pointer"
+        className="inline-block cursor-pointer"
       >
         <div className="w-24 h-24 flex flex-col items-center justify-center gap-1 p-2 bg-white/10 hover:bg-white/20 rounded-lg border border-white/30 hover:border-white/50 transition-all">
           <FileIcon className="text-3xl text-white/70" />
