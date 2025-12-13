@@ -57,6 +57,9 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
         fileInputRef.current.value = "";
       }
     } catch (error) {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       console.error("Error sending message:", error);
       alert("Failed to send message");
     }

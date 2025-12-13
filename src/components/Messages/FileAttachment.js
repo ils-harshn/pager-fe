@@ -45,7 +45,7 @@ const getFileIcon = (fileName) => {
   return MdInsertDriveFile;
 };
 
-const FileAttachment = ({ file }) => {
+const FileAttachment = ({ file, files_length }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fileUrl = `${config.uri}${file.url}`;
   const isImage = file.mimetype?.startsWith("image/");
@@ -55,21 +55,31 @@ const FileAttachment = ({ file }) => {
   const closeModal = () => setIsModalOpen(false);
 
   if (isImage) {
+    const isMultiple = files_length > 1;
+
+    const containerClasses = isMultiple
+      ? "inline-block cursor-pointer"
+      : "inline-block cursor-pointer w-full max-w-[300px]";
+
+    const imageWrapperClasses = isMultiple
+      ? "w-24 h-24 rounded-lg"
+      : "rounded-lg";
+
     return (
       <>
-        <div 
-          onClick={openModal}
-          className="inline-block cursor-pointer"
-        >
-          <div className="w-24 h-24 rounded-lg border border-white/30 hover:border-white/50 transition-all overflow-hidden bg-black/40">
+        <div onClick={openModal} className={containerClasses}>
+          <div
+            className={`${imageWrapperClasses} border border-white/30 hover:border-white/50 transition-all overflow-hidden bg-black/40`}
+          >
             <img
               src={fileUrl}
               alt={file.originalname}
-              className="w-full h-full object-cover"
+              className={`w-full ${isMultiple ? "h-full" : ""} object-cover`}
             />
           </div>
         </div>
-        <FilePreviewModal 
+
+        <FilePreviewModal
           isOpen={isModalOpen}
           onClose={closeModal}
           file={file}

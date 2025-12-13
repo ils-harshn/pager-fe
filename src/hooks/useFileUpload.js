@@ -9,8 +9,8 @@ const useFileUpload = (roomId) => {
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     const validFiles = files.filter((file) => {
-      if (file.size > 10 * 1024 * 1024) {
-        alert(`${file.name} exceeds 10MB limit`);
+      if (file.size > 1000 * 1024 * 1024) {
+        alert(`${file.name} exceeds 1000MB limit`);
         return false;
       }
       return true;
