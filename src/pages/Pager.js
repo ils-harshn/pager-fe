@@ -48,7 +48,7 @@ const Pager = () => {
       <div className="flex-grow flex min-h-0">
         <div className="border-r border-[#B3B3B3] flex-1 min-w-[320px] flex flex-col">
           <div
-            className="flex-grow overflow-y-auto pb-5"
+            className="flex-grow overflow-y-auto"
             ref={messagesContainerRef}
           >
             <Messages messagesContainerRef={messagesContainerRef} />
