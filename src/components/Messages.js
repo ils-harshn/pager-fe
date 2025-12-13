@@ -151,12 +151,11 @@ function Messages({ messagesContainerRef, onScrollButtonChange }) {
     <div className="h-full">
       <div className="space-y-4 px-4 py-4">
         {groupedMessages.map((group, groupIndex) => {
-          const { time, dateStr } = formatTime(group.at);
           const isOwnMessage = group?.id === socket.id;
           
           return (
             <div key={groupIndex} className={`flex flex-col gap-1.5 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
-              {/* Header with avatar, username, and timestamp */}
+              {/* Header with avatar and username */}
               <div className={`flex items-center gap-2 px-1 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div 
                   className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0 shadow-sm"
@@ -164,49 +163,59 @@ function Messages({ messagesContainerRef, onScrollButtonChange }) {
                 >
                   {group.avatar?.emoji}
                 </div>
-                <div className={`flex items-baseline gap-2 flex-wrap ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <span
-                    className={`${
-                      isOwnMessage ? "text-yellow-400" : "text-green-400"
-                    } font-semibold text-sm`}
-                  >
-                    {isOwnMessage ? "You" : group.username}
-                  </span>
-                  <span className="text-white/50 text-xs">
-                    {time} • {dateStr}
-                  </span>
-                </div>
+                <span
+                  className={`${
+                    isOwnMessage ? "text-yellow-400" : "text-green-400"
+                  } font-semibold text-sm`}
+                >
+                  {isOwnMessage ? "You" : group.username}
+                </span>
               </div>
 
-              {/* Messages container */}
-              <div className={`flex flex-col gap-2 ${isOwnMessage ? 'items-end' : 'items-start'} w-full`}>
-                {group.messages.map((message, msgIndex) => (
-                  <div 
-                    key={msgIndex} 
-                    className={`rounded-2xl px-4 py-2.5 max-w-[85%] ${
-                      isOwnMessage 
-                        ? "bg-gradient-to-br from-yellow-600/20 to-yellow-700/30 border border-yellow-600/30 mr-2" 
-                        : "bg-gradient-to-br from-green-600/20 to-green-700/30 border border-green-600/30 ml-2"
-                    } backdrop-blur-sm shadow-lg`}
-                  >
-                    {message.msg && (
-                      <div
-                        className={`${
-                          isOwnMessage ? "text-yellow-100" : "text-green-100"
-                        } text-sm leading-relaxed whitespace-pre-wrap break-words`}
+              {/* Time groups - each with its own bubble */}
+              <div className={`flex flex-col gap-3 ${isOwnMessage ? 'items-end' : 'items-start'} w-full`}>
+                {group.timeGroups.map((timeGroup, timeIndex) => {
+                  const { time, dateStr } = formatTime(timeGroup.at);
+                  return (
+                    <div key={timeIndex} className={`flex flex-col gap-1 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
+                      {/* Single bubble for all messages at this time */}
+                      <div 
+                        className={`rounded-2xl px-4 py-2.5 max-w-[85%] ${
+                          isOwnMessage 
+                            ? "bg-gradient-to-br from-yellow-600/20 to-yellow-700/30 border border-yellow-600/30 mr-2" 
+                            : "bg-gradient-to-br from-green-600/20 to-green-700/30 border border-green-600/30 ml-2"
+                        } backdrop-blur-sm shadow-lg`}
                       >
-                        {message.msg}
-                      </div>
-                    )}
-                    {message.files && message.files.length > 0 && (
-                      <div className={`flex flex-wrap gap-2 ${message.msg ? 'mt-3' : ''}`}>
-                        {message.files.map((file, fileIndex) => (
-                          <FileAttachment key={fileIndex} file={file} />
+                        {timeGroup.messages.map((message, msgIndex) => (
+                          <div key={msgIndex}>
+                            {message.msg && (
+                              <div
+                                className={`${
+                                  isOwnMessage ? "text-yellow-100" : "text-green-100"
+                                } text-sm leading-relaxed whitespace-pre-wrap break-words ${
+                                  msgIndex > 0 ? 'mt-2' : ''
+                                }`}
+                              >
+                                {message.msg}
+                              </div>
+                            )}
+                            {message.files && message.files.length > 0 && (
+                              <div className={`flex flex-wrap gap-2 ${message.msg ? 'mt-3' : msgIndex > 0 ? 'mt-2' : ''}`}>
+                                {message.files.map((file, fileIndex) => (
+                                  <FileAttachment key={fileIndex} file={file} />
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                ))}
+                      {/* Timestamp below the bubble */}
+                      <span className={`text-white/50 text-xs px-2 ${isOwnMessage ? 'mr-2' : 'ml-2'}`}>
+                        {time} • {dateStr}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );
