@@ -34,49 +34,34 @@ function Messages({ messagesContainerRef }) {
 
     if (isImage) {
       return (
-        <div className="inline-block mr-2 mb-2">
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-            <div className="w-32 h-32 rounded-lg border-2 border-white/20 hover:border-white/40 transition-all overflow-hidden bg-black/30">
-              <img
-                src={fileUrl}
-                alt={file.originalname}
-                className="w-full h-full object-cover cursor-pointer"
-              />
-            </div>
-          </a>
-          <a
-            href={fileUrl}
-            download={file.originalname}
-            className="flex items-center gap-1 text-[10px] text-white/70 hover:text-white mt-1"
-          >
-            <IoMdDownload className="text-xs" />
-            <span className="truncate max-w-[120px]" title={file.originalname}>
-              {file.originalname}
-            </span>
-          </a>
-        </div>
+        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="inline-block mr-2 mb-2">
+          <div className="w-24 h-24 rounded-lg border border-white/30 hover:border-white/50 transition-all overflow-hidden bg-black/40 cursor-pointer">
+            <img
+              src={fileUrl}
+              alt={file.originalname}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </a>
       );
     }
 
     return (
-      <div className="inline-block mr-2 mb-2">
-        <a
-          href={fileUrl}
-          download={file.originalname}
-          className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg border border-white/20 hover:border-white/40 transition-all max-w-[200px]"
-        >
-          <IoMdDocument className="text-xl flex-shrink-0" />
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs truncate" title={file.originalname}>
-              {file.originalname}
-            </span>
-            <span className="text-[10px] text-white/60">
-              {(file.size / 1024).toFixed(1)} KB
-            </span>
-          </div>
-          <IoMdDownload className="text-lg flex-shrink-0" />
-        </a>
-      </div>
+      <a
+        href={fileUrl}
+        download={file.originalname}
+        className="inline-block mr-2 mb-2"
+      >
+        <div className="w-24 h-24 flex flex-col items-center justify-center gap-1 p-2 bg-white/10 hover:bg-white/20 rounded-lg border border-white/30 hover:border-white/50 transition-all">
+          <IoMdDocument className="text-3xl text-white/70" />
+          <span className="text-[9px] text-white text-center truncate w-full px-1" title={file.originalname}>
+            {file.originalname}
+          </span>
+          <span className="text-[8px] text-white/60">
+            {(file.size / 1024).toFixed(1)} KB
+          </span>
+        </div>
+      </a>
     );
   };
 
