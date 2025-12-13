@@ -95,61 +95,71 @@ function Messages({ messagesContainerRef }) {
 
   const groupedMessages = groupMessages(messages);
 
-  return groupedMessages.map((group, groupIndex) => {
-    const { time, dateStr } = formatTime(group.at);
-    return (
-      <div
-        key={groupIndex}
-        className={`last:mb-4 pt-2 ${
-          group?.id === socket.id ? "bg-[#312a0f]" : "bg-[#0e320e]"
-        }`}
-      >
-        <div className="flex items-baseline gap-2 mb-3 px-3">
-          <div 
-            className="w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-            style={{ backgroundColor: group.avatar?.color }}
-          >
-            {group.avatar?.emoji}
-          </div>
-          <span
-            className={`${
-              group?.id === socket.id ? "text-[#c7a62d]" : "text-[#32b834]"
-            } font-semibold text-xs`}
-          >
-            {group?.id === socket.id ? "You" : group.username}
-          </span>
-          <span className="text-[#ffffff] text-[10px]">{time}</span>
-          <span className="text-[#ffffff] text-[10px]">{dateStr}</span>
-        </div>
-        <div
-          className={`border-b ${
-            group?.id === socket.id ? "border-[#d4af28]" : "border-[#2baf2d]"
-          } px-3 pb-2`}
-        >
-          {group.messages.map((message, msgIndex) => (
-            <div key={msgIndex} className="mb-2">
-              {message.msg && (
-                <div
+  return (
+    <div className="space-y-4 px-4 py-4">
+      {groupedMessages.map((group, groupIndex) => {
+        const { time, dateStr } = formatTime(group.at);
+        const isOwnMessage = group?.id === socket.id;
+        
+        return (
+          <div key={groupIndex} className={`flex flex-col gap-1.5 ${isOwnMessage ? 'items-end' : 'items-start'}`}>
+            {/* Header with avatar, username, and timestamp */}
+            <div className={`flex items-center gap-2 px-1 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0 shadow-sm"
+                style={{ backgroundColor: group.avatar?.color }}
+              >
+                {group.avatar?.emoji}
+              </div>
+              <div className={`flex items-baseline gap-2 flex-wrap ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
+                <span
                   className={`${
-                    socket.id === group.id ? "text-[#FFD43B]" : "text-[#3bff3e]"
-                  } font-semibold text-base whitespace-pre-wrap break-words mb-2`}
+                    isOwnMessage ? "text-yellow-400" : "text-green-400"
+                  } font-semibold text-sm`}
                 >
-                  {message.msg}
-                </div>
-              )}
-              {message.files && message.files.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {message.files.map((file, fileIndex) => (
-                    <FileAttachment key={fileIndex} file={file} />
-                  ))}
-                </div>
-              )}
+                  {isOwnMessage ? "You" : group.username}
+                </span>
+                <span className="text-white/50 text-xs">
+                  {time} • {dateStr}
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
-    );
-  });
+
+            {/* Messages container */}
+            <div className={`flex flex-col gap-2 ${isOwnMessage ? 'items-end' : 'items-start'} w-full`}>
+              {group.messages.map((message, msgIndex) => (
+                <div 
+                  key={msgIndex} 
+                  className={`rounded-2xl px-4 py-2.5 max-w-[85%] ${
+                    isOwnMessage 
+                      ? "bg-gradient-to-br from-yellow-600/20 to-yellow-700/30 border border-yellow-600/30 mr-2" 
+                      : "bg-gradient-to-br from-green-600/20 to-green-700/30 border border-green-600/30 ml-2"
+                  } backdrop-blur-sm shadow-lg`}
+                >
+                  {message.msg && (
+                    <div
+                      className={`${
+                        isOwnMessage ? "text-yellow-100" : "text-green-100"
+                      } text-sm leading-relaxed whitespace-pre-wrap break-words`}
+                    >
+                      {message.msg}
+                    </div>
+                  )}
+                  {message.files && message.files.length > 0 && (
+                    <div className={`flex flex-wrap gap-2 ${message.msg ? 'mt-3' : ''}`}>
+                      {message.files.map((file, fileIndex) => (
+                        <FileAttachment key={fileIndex} file={file} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default Messages;
