@@ -1,7 +1,52 @@
-import { MdClose, MdImage, MdInsertDriveFile } from "react-icons/md";
+import { 
+  MdClose, 
+  MdImage, 
+  MdInsertDriveFile, 
+  MdPictureAsPdf, 
+  MdAudioFile,
+  MdVideoFile,
+  MdTableChart,
+  MdDescription,
+  MdFolderZip,
+  MdCode,
+  MdTextSnippet
+} from "react-icons/md";
+
+const getFileIcon = (file) => {
+  const fileName = file.name.toLowerCase();
+  const extension = fileName.split('.').pop();
+  
+  // PDF
+  if (extension === 'pdf') return MdPictureAsPdf;
+  
+  // Audio files
+  if (['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'].includes(extension)) return MdAudioFile;
+  
+  // Video files
+  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(extension)) return MdVideoFile;
+  
+  // Spreadsheets
+  if (['xlsx', 'xls', 'csv', 'ods'].includes(extension)) return MdTableChart;
+  
+  // Documents
+  if (['doc', 'docx', 'odt', 'rtf'].includes(extension)) return MdDescription;
+  
+  // Archives
+  if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].includes(extension)) return MdFolderZip;
+  
+  // Code files
+  if (['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'cpp', 'c', 'cs', 'php', 'rb', 'go', 'rs', 'swift', 'kt'].includes(extension)) return MdCode;
+  
+  // Text files
+  if (['txt', 'md', 'json', 'xml', 'yml', 'yaml', 'log'].includes(extension)) return MdTextSnippet;
+  
+  // Default
+  return MdInsertDriveFile;
+};
 
 const FilePreview = ({ fileObj, onRemove }) => {
   const isImage = fileObj.file.type.startsWith("image/");
+  const FileIcon = getFileIcon(fileObj.file);
 
   return (
     <div className="flex-shrink-0 relative pt-2 pr-2">
@@ -37,7 +82,7 @@ const FilePreview = ({ fileObj, onRemove }) => {
         </div>
       ) : (
         <div className="w-24 h-24 bg-[#2c0e2f] rounded-lg border border-[#831d8d] hover:border-[#a842b5] transition-all flex flex-col items-center justify-center gap-1 p-2 relative">
-          <MdInsertDriveFile className="text-3xl text-white/70" />
+          <FileIcon className="text-3xl text-white/70" />
           <p
             className="text-white text-[9px] truncate w-full text-center px-1"
             title={fileObj.file.name}
