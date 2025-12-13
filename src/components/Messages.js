@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import socket from "../socket";
 import { SOCKET_EVENTS } from "../constants";
 import { formatTime, groupMessages } from "../utils";
+import { IoMdDownload, IoMdDocument } from "react-icons/io";
+import config from "../config";
 
 function Messages({ messagesContainerRef }) {
   const [messages, setMessages] = useState([]);
@@ -22,12 +24,68 @@ function Messages({ messagesContainerRef }) {
     }
   };
 
+  const isImageFile = (mimetype) => {
+    return mimetype?.startsWith("image/");
+  };
+
+  const FileAttachment = ({ file }) => {
+    const fileUrl = `${config.uri}${file.url}`;
+    const isImage = isImageFile(file.mimetype);
+
+    if (isImage) {
+      return (
+        <div className="inline-block mr-2 mb-2">
+          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+            <div className="w-32 h-32 rounded-lg border-2 border-white/20 hover:border-white/40 transition-all overflow-hidden bg-black/30">
+              <img
+                src={fileUrl}
+                alt={file.originalname}
+                className="w-full h-full object-cover cursor-pointer"
+              />
+            </div>
+          </a>
+          <a
+            href={fileUrl}
+            download={file.originalname}
+            className="flex items-center gap-1 text-[10px] text-white/70 hover:text-white mt-1"
+          >
+            <IoMdDownload className="text-xs" />
+            <span className="truncate max-w-[120px]" title={file.originalname}>
+              {file.originalname}
+            </span>
+          </a>
+        </div>
+      );
+    }
+
+    return (
+      <div className="inline-block mr-2 mb-2">
+        <a
+          href={fileUrl}
+          download={file.originalname}
+          className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg border border-white/20 hover:border-white/40 transition-all max-w-[200px]"
+        >
+          <IoMdDocument className="text-xl flex-shrink-0" />
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs truncate" title={file.originalname}>
+              {file.originalname}
+            </span>
+            <span className="text-[10px] text-white/60">
+              {(file.size / 1024).toFixed(1)} KB
+            </span>
+          </div>
+          <IoMdDownload className="text-lg flex-shrink-0" />
+        </a>
+      </div>
+    );
+  };
+
   useEffect(() => {
-    function handleMessage({ id, username, msg, at, avatar }) {
+    function handleMessage({ id, username, msg, at, avatar, files }) {
       const wasAtBottom = isUserAtBottom();
       setMessages((prevMessages) => [
         ...prevMessages,
-        { id, username, msg, at, avatar },
+        { id, username, msg, at, avatar, files: files || [] },
       ]);
 
       if (wasAtBottom) {
@@ -84,13 +142,23 @@ function Messages({ messagesContainerRef }) {
           } px-3 pb-2`}
         >
           {group.messages.map((message, msgIndex) => (
-            <div
-              key={msgIndex}
-              className={`${
-                socket.id === group.id ? "text-[#FFD43B]" : "text-[#3bff3e]"
-              } font-semibold text-base whitespace-pre-wrap break-words mb-1`}
-            >
-              {message.msg}
+            <div key={msgIndex} className="mb-2">
+              {message.msg && (
+                <div
+                  className={`${
+                    socket.id === group.id ? "text-[#FFD43B]" : "text-[#3bff3e]"
+                  } font-semibold text-base whitespace-pre-wrap break-words mb-2`}
+                >
+                  {message.msg}
+                </div>
+              )}
+              {message.files && message.files.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {message.files.map((file, fileIndex) => (
+                    <FileAttachment key={fileIndex} file={file} />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
