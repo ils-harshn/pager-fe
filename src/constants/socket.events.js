@@ -18,6 +18,7 @@ const SOCKET_EVENTS = {
   MESSAGE: "message",
   UPDATE_USERS: "updateUsers",
   UPDATE_LOGS: "updateLogs",
+  USERNAME_TAKEN: "usernameTaken",
 };
 
 export default SOCKET_EVENTS;

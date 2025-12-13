@@ -10,6 +10,7 @@ const useSocket = (roomId, username, status = '') => {
   const [joinRequests, setJoinRequests] = useState([]);
   const [kicked, setKicked] = useState(false);
   const [roomEnded, setRoomEnded] = useState(false);
+  const [usernameTaken, setUsernameTaken] = useState(false);
 
   useEffect(() => {
     const avatar = generateAvatar(username);
@@ -64,6 +65,11 @@ const useSocket = (roomId, username, status = '') => {
       }));
     }
 
+    function onUsernameTaken() {
+      setUsernameTaken(true);
+      socket.disconnect();
+    }
+
     socket.on(SOCKET_EVENTS.CONNECT, handleConnect);
     socket.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
     socket.on(SOCKET_EVENTS.JOINED_ROOM, hasJoinedRoom);
@@ -72,6 +78,7 @@ const useSocket = (roomId, username, status = '') => {
     socket.on(SOCKET_EVENTS.ROOM_ENDED, onRoomEnded);
     socket.on(SOCKET_EVENTS.USER_PROMOTED_TO_ADMIN, onUserPromotedToAdmin);
     socket.on(SOCKET_EVENTS.USER_DEMOTED_FROM_ADMIN, onUserDemotedFromAdmin);
+    socket.on(SOCKET_EVENTS.USERNAME_TAKEN, onUsernameTaken);
 
     socket.connect();
 
@@ -84,6 +91,7 @@ const useSocket = (roomId, username, status = '') => {
       socket.off(SOCKET_EVENTS.ROOM_ENDED, onRoomEnded);
       socket.off(SOCKET_EVENTS.USER_PROMOTED_TO_ADMIN, onUserPromotedToAdmin);
       socket.off(SOCKET_EVENTS.USER_DEMOTED_FROM_ADMIN, onUserDemotedFromAdmin);
+      socket.off(SOCKET_EVENTS.USERNAME_TAKEN, onUsernameTaken);
       socket.disconnect();
     };
   }, [roomId, username, status]);
@@ -96,6 +104,7 @@ const useSocket = (roomId, username, status = '') => {
     setJoinRequests,
     kicked,
     roomEnded,
+    usernameTaken,
   };
 };
 

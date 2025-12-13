@@ -13,6 +13,7 @@ import {
   KickedState,
   RoomEndedState,
 } from "../components/Pager";
+import UsernameTaken from "../components/Pager/UsernameTaken";
 import { useSocket } from "../hooks";
 
 const Pager = () => {
@@ -29,6 +30,7 @@ const Pager = () => {
     setJoinRequests,
     kicked,
     roomEnded,
+    usernameTaken,
   } = useSocket(id, username, status);
 
   const handleScrollToBottom = () => {
@@ -36,6 +38,10 @@ const Pager = () => {
       messagesContainerRef.current.scrollToBottomHandler();
     }
   };
+
+  if (usernameTaken) {
+    return <UsernameTaken id={id} username={username} />;
+  }
 
   if (roomEnded) {
     return <RoomEndedState />;
