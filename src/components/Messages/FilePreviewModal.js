@@ -70,18 +70,18 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
     switch (fileType) {
       case 'image':
         return (
-          <div className="flex items-center justify-center max-h-[70vh] overflow-auto">
+          <div className="flex items-center justify-center max-h-[68vh] overflow-auto">
             <img 
               src={fileUrl} 
               alt={file.originalname}
-              className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              className="max-w-full max-h-[68vh] object-contain rounded-lg"
             />
           </div>
         );
       
       case 'pdf':
         return (
-          <div className="h-[70vh]">
+          <div className="h-[68vh]">
             <iframe
               src={fileUrl}
               title={file.originalname}
@@ -95,7 +95,7 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
           <div className="flex items-center justify-center">
             <video 
               controls 
-              className="max-w-full max-h-[70vh] rounded-lg"
+              className="max-w-full max-h-[68vh] rounded-lg"
               src={fileUrl}
             >
               Your browser does not support video playback.
@@ -121,15 +121,17 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
       
       case 'text':
         return (
-          <div className="w-full h-[70vh]">
+          <div className="w-full h-[68vh]">
             {loadingText ? (
               <div className="flex items-center justify-center h-full text-white">
                 Loading...
               </div>
             ) : (
-              <pre className="w-full h-full overflow-auto p-4 bg-[#1a0a1d] rounded-lg border border-[#831d8d] text-sm text-gray-200 font-mono whitespace-pre-wrap break-words">
-                {textContent}
-              </pre>
+              <div className="w-full h-full bg-[#1a0a1d] rounded-lg border border-[#831d8d] overflow-hidden">
+                <pre className="w-full h-full overflow-auto p-4 text-sm text-gray-200 font-mono whitespace-pre-wrap break-words">
+                  {textContent}
+                </pre>
+              </div>
             )}
           </div>
         );
@@ -167,6 +169,7 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
           background: '#2c0e2f',
           borderRadius: '12px',
           padding: '0',
+          minWidth: '280px',
           maxWidth: '90vw',
           maxHeight: '90vh',
           overflow: 'hidden',
@@ -176,11 +179,11 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
     >
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#831d8d] bg-[#3d1a42]">
-          <h2 className="text-white font-semibold text-lg truncate max-w-[70%]">
+        <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#831d8d] bg-[#3d1a42]">
+          <h2 className="text-white font-semibold text-lg truncate flex-1 min-w-0">
             {file.originalname}
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={handleDownload}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
@@ -204,8 +207,15 @@ const FilePreviewModal = ({ isOpen, onClose, file, fileUrl }) => {
 
         {/* Footer */}
         <div className="px-6 py-3 border-t border-[#831d8d] bg-[#3d1a42] text-white/60 text-sm">
-          Size: {(file.size / 1024).toFixed(1)} KB
-          {file.mimetype && <span className="ml-4">Type: {file.mimetype}</span>}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="whitespace-nowrap">Size: {(file.size / 1024).toFixed(1)} KB</span>
+            {file.mimetype && (
+              <>
+                <span className="text-white/30">•</span>
+                <span className="break-all">Type: {file.mimetype}</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </Modal>
