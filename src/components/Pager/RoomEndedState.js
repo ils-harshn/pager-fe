@@ -1,5 +1,3 @@
-import { Links } from "./index";
-
 const RoomEndedState = () => {
   return (
     <div className="flex items-center justify-center h-[100dvh] bg-[#1a1a1a]">
@@ -19,7 +17,6 @@ const RoomEndedState = () => {
             Return to Home
           </a>
         </div>
-        <Links />
       </div>
     </div>
   );
