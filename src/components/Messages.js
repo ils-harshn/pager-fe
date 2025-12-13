@@ -49,7 +49,7 @@ function Messages({ messagesContainerRef }) {
     return (
       <a
         href={fileUrl}
-        download={file.originalname}
+        target="_blank"
         className="inline-block mr-2 mb-2"
       >
         <div className="w-24 h-24 flex flex-col items-center justify-center gap-1 p-2 bg-white/10 hover:bg-white/20 rounded-lg border border-white/30 hover:border-white/50 transition-all">
