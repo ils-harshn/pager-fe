@@ -1,6 +1,7 @@
-import { useEffect } from "react";
 import socket from "../../socket";
 import { SOCKET_EVENTS } from "../../constants";
+import { Button, UserInfo, SectionHeader } from "../common";
+import { useSocketEvent } from "../../hooks";
 
 const ShowJoinRequests = ({ requests, setJoinRequests }) => {
   const approveJoin = (socketId) => {
@@ -17,33 +18,24 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
     );
   };
 
-  useEffect(() => {
-    const handleJoinRequestCancelled = ({ socketId }) => {
-      setJoinRequests((prevRequests) =>
-        prevRequests.filter((request) => request.socketId !== socketId)
-      );
-    };
-    
-    const handleJoinRequestResolved = ({ socketId }) => {
-      setJoinRequests((prevRequests) =>
-        prevRequests.filter((request) => request.socketId !== socketId)
-      );
-    };
-    
-    socket.on(SOCKET_EVENTS.JOIN_REQUEST_CANCELLED, handleJoinRequestCancelled);
-    socket.on(SOCKET_EVENTS.JOIN_REQUEST_RESOLVED, handleJoinRequestResolved);
-    
-    return () => {
-      socket.off(SOCKET_EVENTS.JOIN_REQUEST_CANCELLED, handleJoinRequestCancelled);
-      socket.off(SOCKET_EVENTS.JOIN_REQUEST_RESOLVED, handleJoinRequestResolved);
-    };
-  }, []);
+  const handleJoinRequestResolved = ({ socketId }) => {
+    setJoinRequests((prevRequests) =>
+      prevRequests.filter((request) => request.socketId !== socketId)
+    );
+  };
+
+  useSocketEvent(socket, [
+    { event: SOCKET_EVENTS.JOIN_REQUEST_CANCELLED, handler: handleJoinRequestResolved },
+    { event: SOCKET_EVENTS.JOIN_REQUEST_RESOLVED, handler: handleJoinRequestResolved },
+  ]);
 
   return (
     <>
-      <div className="border-[#FFD43B] border-b bg-[#b7c12a] px-5 py-2">
-        <h3 className="text-white font-bold">Join Requests</h3>
-      </div>
+      <SectionHeader 
+        title="Join Requests" 
+        bgColor="#b7c12a" 
+        borderColor="#FFD43B" 
+      />
       <div>
         <ul>
           {requests.map((request, index) => (
@@ -51,30 +43,30 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
               key={index}
               className="border-[#B3B3B3] border-b flex justify-between items-center"
             >
-              <div className="px-5 py-2 flex items-center gap-3">
-                <div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
-                  style={{ backgroundColor: request.avatar?.color }}
-                >
-                  {request.avatar?.emoji}
-                </div>
-                <p className="text-white font-semibold">{request.username}</p>
+              <div className="px-5 py-2">
+                <UserInfo 
+                  user={{ ...request, username: request.username }} 
+                  avatarSize="small" 
+                  showStatus={false}
+                />
               </div>
               <div className="flex items-center gap-2 pr-1">
-                <button
+                <Button
                   onClick={() => approveJoin(request.socketId)}
-                  className="bg-[#03d506] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold"
+                  variant="success"
+                  size="small"
                   type="submit"
                 >
                   Approve
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => rejectJoin(request.socketId)}
-                  className="bg-[#d53703] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold"
+                  variant="danger"
+                  size="small"
                   type="submit"
                 >
                   Reject
-                </button>
+                </Button>
               </div>
             </li>
           ))}

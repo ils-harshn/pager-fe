@@ -3,6 +3,7 @@ import socket from "../../socket";
 import { SOCKET_EVENTS } from "../../constants";
 import { roomService } from "../../services";
 import { FaUserTimes, FaUserShield } from "react-icons/fa";
+import { Button, UserInfo, SectionHeader } from "../common";
 
 const ListConnectedUsers = ({ roomId, loggedUser }) => {
   const [users, setUsers] = useState([]);
@@ -43,9 +44,11 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
 
   return (
     <>
-      <div className="border-[#f23bff] border-b bg-[#992ac1] px-5 py-2">
-        <h3 className="text-white font-bold">Room Members</h3>
-      </div>
+      <SectionHeader 
+        title="Room Members" 
+        bgColor="#992ac1" 
+        borderColor="#f23bff" 
+      />
       <div>
         <ul>
           {users
@@ -59,55 +62,44 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
                 key={index}
                 className="border-[#B3B3B3] border-b flex justify-between items-center"
               >
-                <div className="px-5 py-2 flex items-center gap-3">
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
-                    style={{ backgroundColor: user.avatar?.color }}
-                  >
-                    {user.avatar?.emoji}
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">
-                      {user.username}
-                      {user?.owner ? " (Moderator)" : ""}
-                      {user?.isAdmin ? " (Admin)" : ""}
-                    </p>
-                    {user.status && (
-                      <p className="text-gray-300 text-xs italic">{user.status}</p>
-                    )}
-                  </div>
+                <div className="px-5 py-2">
+                  <UserInfo user={user} />
                 </div>
                 {(loggedUser?.owner || loggedUser?.isAdmin) && !user?.owner && (
                   <div className="pr-2 flex gap-1">
                     {loggedUser?.owner && !user?.isAdmin && (
-                      <button
+                      <Button
                         onClick={() => handleMakeAdmin(user.id)}
-                        className="bg-[#2563eb] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold flex items-center gap-1 hover:bg-[#3b82f6]"
+                        variant="info"
+                        size="small"
+                        icon={<FaUserShield />}
                         title="Make user admin"
                       >
-                        <FaUserShield />
                         <span>Make Admin</span>
-                      </button>
+                      </Button>
                     )}
                     {canRevokeAdmin && user?.isAdmin && (
-                      <button
+                      <Button
                         onClick={() => handleRevokeAdmin(user.id)}
-                        className="bg-[#f59e0b] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold flex items-center gap-1 hover:bg-[#fbbf24]"
+                        variant="warning"
+                        size="small"
+                        icon={<FaUserShield />}
                         title="Revoke admin rights"
                       >
-                        <FaUserShield />
                         <span>Revoke Admin</span>
-                      </button>
+                      </Button>
                     )}
                     {!user?.isAdmin && (
-                      <button
+                      <Button
                         onClick={() => handleKickUser(user.id)}
-                        className="bg-[#d53703] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold flex items-center gap-1 hover:bg-[#ff4411]"
+                        variant="danger"
+                        size="small"
+                        icon={<FaUserTimes />}
+                        className="hover:bg-[#ff4411]"
                         title="Kick user from room"
                       >
-                        <FaUserTimes />
                         <span>Kick</span>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 )}
@@ -115,23 +107,8 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
               );
             })}
           <li className="border-[#B3B3B3] border-b flex justify-between items-center">
-            <div className="px-5 py-2 flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
-                style={{ backgroundColor: loggedUser.avatar?.color }}
-              >
-                {loggedUser.avatar?.emoji}
-              </div>
-              <div>
-                <p className="text-white font-semibold">
-                  {loggedUser.username} (You)
-                  {loggedUser?.owner ? " (Moderator)" : ""}
-                  {loggedUser?.isAdmin ? " (Admin)" : ""}
-                </p>
-                {loggedUser.status && (
-                  <p className="text-gray-300 text-xs italic">{loggedUser.status}</p>
-                )}
-              </div>
+            <div className="px-5 py-2">
+              <UserInfo user={loggedUser} showYou={true} />
             </div>
           </li>
         </ul>

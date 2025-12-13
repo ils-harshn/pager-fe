@@ -1,10 +1,13 @@
+import CenteredStateContainer from '../common/CenteredStateContainer';
+import { Button } from '../common';
+
 const UsernameTaken = ({ id, username }) => {
   const handleGoBack = () => {
     window.location.href = "/";
   };
 
   return (
-    <div className="mx-auto max-w-[1440px] h-[100dvh] border-l border-r border-[#B3B3B3] flex flex-col items-center justify-center gap-4">
+    <CenteredStateContainer className="gap-4">
       <p className="text-white text-center max-w-md">
         The username{" "}
         <span className="text-[#1596ff] font-bold">{username}</span> is already
@@ -14,13 +17,14 @@ const UsernameTaken = ({ id, username }) => {
       <p className="text-gray-400 text-center max-w-md">
         Please choose a different username to join this room.
       </p>
-      <button
+      <Button
         onClick={handleGoBack}
-        className="mt-4 px-6 py-2 bg-[#1596ff] text-white rounded-lg hover:bg-[#0d7de0] transition-colors"
+        variant="secondary"
+        className="mt-4 rounded-lg"
       >
         Go Back
-      </button>
-    </div>
+      </Button>
+    </CenteredStateContainer>
   );
 };
 
