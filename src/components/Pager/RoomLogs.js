@@ -76,7 +76,7 @@ const RoomLogs = () => {
         )}
       </div>
       {isExpanded && (
-        <div className="max-h-[300px] overflow-y-auto">
+        <div className="border-[#c2c2c2] border-b">
           <ul>
             {logs.length === 0 ? (
               <li className="px-5 py-3 text-[#b1b1b1] text-sm text-center">
@@ -86,7 +86,7 @@ const RoomLogs = () => {
               reversedLogs.map((log, index) => (
                 <li
                   key={index}
-                  className="border-[#B3B3B3] border-b px-5 py-2"
+                  className="border-[#B3B3B3] border-b last:border-b-0 px-5 py-2"
                 >
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5">{getLogIcon(log.type)}</div>
