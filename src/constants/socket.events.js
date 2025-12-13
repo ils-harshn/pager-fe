@@ -10,6 +10,7 @@ const SOCKET_EVENTS = {
   USER_KICKED: "userKicked",
   MESSAGE: "message",
   UPDATE_USERS: "updateUsers",
+  UPDATE_LOGS: "updateLogs",
 };
 
 export default SOCKET_EVENTS;

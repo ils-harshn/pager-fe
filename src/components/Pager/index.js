@@ -9,6 +9,7 @@ import LoadingState from "./LoadingState";
 import DisconnectedState from "./DisconnectedState";
 import WaitingForApproval from "./WaitingForApproval";
 import KickedState from "./KickedState";
+import RoomLogs from "./RoomLogs";
 
 export {
   Logout,
@@ -22,4 +23,5 @@ export {
   DisconnectedState,
   WaitingForApproval,
   KickedState,
+  RoomLogs,
 };

@@ -1,5 +1,6 @@
 import ListConnectedUsers from "./ListConnectedUsers";
 import ShowJoinRequests from "./ShowJoinRequests";
+import RoomLogs from "./RoomLogs";
 
 const PagerSidebar = ({ roomId, user, joinRequests, setJoinRequests }) => {
   return (
@@ -29,6 +30,7 @@ const PagerSidebar = ({ roomId, user, joinRequests, setJoinRequests }) => {
           setJoinRequests={setJoinRequests}
         />
       ) : null}
+      <RoomLogs />
     </div>
   );
 };
