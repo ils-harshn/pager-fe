@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import socket from "../socket";
 import MessageInput from "../components/MessageInput";
 import Messages from "../components/Messages";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   PagerHeader,
   PagerSidebar,
@@ -17,10 +18,24 @@ import { useSocket } from "../hooks";
 const Pager = () => {
   const { id, username } = useParams();
   const [searchParams] = useSearchParams();
-  const status = searchParams.get('status') || '';
+  const status = searchParams.get("status") || "";
   const messagesContainerRef = useRef(null);
-  const { connected, joinedRoom, user, joinRequests, setJoinRequests, kicked, roomEnded } =
-    useSocket(id, username, status);
+  const [scrollButton, setScrollButton] = useState({ show: false, count: 0 });
+  const {
+    connected,
+    joinedRoom,
+    user,
+    joinRequests,
+    setJoinRequests,
+    kicked,
+    roomEnded,
+  } = useSocket(id, username, status);
+
+  const handleScrollToBottom = () => {
+    if (messagesContainerRef.current?.scrollToBottomHandler) {
+      messagesContainerRef.current.scrollToBottomHandler();
+    }
+  };
 
   if (roomEnded) {
     return <RoomEndedState />;
@@ -47,13 +62,16 @@ const Pager = () => {
       <PagerHeader />
       <div className="flex-grow flex min-h-0">
         <div className="border-r border-[#B3B3B3] flex-1 min-w-[320px] flex flex-col">
-          <div
-            className="flex-grow overflow-y-auto"
-            ref={messagesContainerRef}
-          >
-            <Messages messagesContainerRef={messagesContainerRef} />
+          <div className="flex-grow overflow-y-auto" ref={messagesContainerRef}>
+            <Messages
+              messagesContainerRef={messagesContainerRef}
+              onScrollButtonChange={setScrollButton}
+            />
           </div>
-          <MessageInput />
+          <MessageInput
+            scrollButton={scrollButton}
+            handleScrollToBottom={handleScrollToBottom}
+          />
         </div>
         <PagerSidebar
           roomId={id}

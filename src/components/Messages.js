@@ -3,10 +3,9 @@ import socket from "../socket";
 import { SOCKET_EVENTS } from "../constants";
 import { formatTime, groupMessages } from "../utils";
 import { IoMdDownload, IoMdDocument } from "react-icons/io";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import config from "../config";
 
-function Messages({ messagesContainerRef }) {
+function Messages({ messagesContainerRef, onScrollButtonChange }) {
   const [messages, setMessages] = useState([]);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
@@ -29,9 +28,13 @@ function Messages({ messagesContainerRef }) {
 
   const handleScroll = () => {
     const atBottom = isUserAtBottom();
-    setShowScrollButton(!atBottom);
+    const shouldShow = !atBottom;
+    setShowScrollButton(shouldShow);
     if (atBottom) {
       setNewMessagesCount(0);
+    }
+    if (onScrollButtonChange) {
+      onScrollButtonChange({ show: shouldShow, count: atBottom ? 0 : newMessagesCount });
     }
   };
 
@@ -39,7 +42,15 @@ function Messages({ messagesContainerRef }) {
     scrollToBottom("smooth");
     setNewMessagesCount(0);
     setShowScrollButton(false);
+    if (onScrollButtonChange) {
+      onScrollButtonChange({ show: false, count: 0 });
+    }
   };
+
+  // Expose scrollToBottom to parent
+  if (messagesContainerRef.current) {
+    messagesContainerRef.current.scrollToBottomHandler = handleScrollButtonClick;
+  }
 
   const isImageFile = (mimetype) => {
     return mimetype?.startsWith("image/");
@@ -97,8 +108,12 @@ function Messages({ messagesContainerRef }) {
         });
       } else {
         // User is reading older messages, show notification
-        setNewMessagesCount((prev) => prev + 1);
+        const newCount = newMessagesCount + 1;
+        setNewMessagesCount(newCount);
         setShowScrollButton(true);
+        if (onScrollButtonChange) {
+          onScrollButtonChange({ show: true, count: newCount });
+        }
       }
     }
     socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
@@ -133,7 +148,7 @@ function Messages({ messagesContainerRef }) {
   const groupedMessages = groupMessages(messages);
 
   return (
-    <div className="relative h-full">
+    <div className="h-full">
       <div className="space-y-4 px-4 py-4">
         {groupedMessages.map((group, groupIndex) => {
           const { time, dateStr } = formatTime(group.at);
@@ -197,23 +212,6 @@ function Messages({ messagesContainerRef }) {
           );
         })}
       </div>
-
-      {/* Floating scroll to bottom button */}
-      {showScrollButton && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-          <button
-            onClick={handleScrollButtonClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-2xl transition-all duration-200 flex items-center gap-2 hover:scale-105"
-          >
-            <MdKeyboardArrowDown className="text-2xl" />
-            {newMessagesCount > 0 && (
-              <span className="text-sm font-semibold pr-1">
-                {newMessagesCount} new
-              </span>
-            )}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

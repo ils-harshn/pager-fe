@@ -2,12 +2,17 @@ import socket from "../socket";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { IoIosSend, IoMdAttach } from "react-icons/io";
-import { MdClose, MdImage, MdInsertDriveFile } from "react-icons/md";
+import {
+  MdClose,
+  MdImage,
+  MdInsertDriveFile,
+  MdKeyboardArrowDown,
+} from "react-icons/md";
 import { SOCKET_EVENTS, API_ENDPOINTS } from "../constants";
 import { isMobileDevice } from "../utils";
 import config from "../config";
 
-const MessageInput = () => {
+const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
   const MAX_HEIGHT = 400;
   const { id: roomId } = useParams(); // Get roomId from URL path params
   const [message, setMessage] = useState("");
@@ -66,9 +71,7 @@ const MessageInput = () => {
         if (e.lengthComputable) {
           const progress = (e.loaded / e.total) * 100;
           setSelectedFiles((prev) =>
-            prev.map((f) =>
-              f.id === fileObj.id ? { ...f, progress } : f
-            )
+            prev.map((f) => (f.id === fileObj.id ? { ...f, progress } : f))
           );
         }
       };
@@ -84,7 +87,7 @@ const MessageInput = () => {
 
       xhr.onerror = () => reject(new Error("File upload failed"));
 
-      const url = roomId 
+      const url = roomId
         ? `${config.uri}${API_ENDPOINTS.UPLOAD_FILE}?roomId=${roomId}`
         : `${config.uri}${API_ENDPOINTS.UPLOAD_FILE}`;
       xhr.open("POST", url);
@@ -94,7 +97,7 @@ const MessageInput = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!message.trim() && selectedFiles.length === 0) {
       return;
     }
@@ -152,7 +155,23 @@ const MessageInput = () => {
   const isImage = (file) => file.type.startsWith("image/");
 
   return (
-    <div className="border-[#831d8d] border-t bg-[#2c0e2f]">
+    <div className="border-[#831d8d] border-t bg-[#2c0e2f] relative">
+      {/* Floating scroll to bottom button */}
+      {scrollButton.show && (
+        <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 z-50">
+          <button
+            onClick={handleScrollToBottom}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-2xl transition-all duration-200 flex items-center gap-2 hover:scale-105"
+          >
+            <MdKeyboardArrowDown className="text-2xl" />
+            {scrollButton.count > 0 && (
+              <span className="text-sm font-semibold pr-1">
+                {scrollButton.count} new
+              </span>
+            )}
+          </button>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="flex flex-col">
         {selectedFiles.length > 0 && (
           <div className="px-4 pt-2 pb-2 bg-[#3d1a42] border-b border-[#831d8d]">
@@ -171,7 +190,7 @@ const MessageInput = () => {
                     >
                       <MdClose className="text-xs" />
                     </button>
-                    
+
                     {isImg ? (
                       <div className="w-14 h-14 rounded-lg border border-[#831d8d] hover:border-[#a842b5] overflow-hidden bg-black/40 transition-all">
                         {fileObj.preview ? (
@@ -197,7 +216,10 @@ const MessageInput = () => {
                     ) : (
                       <div className="w-14 h-14 bg-[#2c0e2f] rounded-lg border border-[#831d8d] hover:border-[#a842b5] transition-all flex flex-col items-center justify-center gap-1 p-2 relative">
                         <MdInsertDriveFile className="text-3xl text-white/70" />
-                        <p className="text-white text-[9px] truncate w-full text-center px-1" title={fileObj.file.name}>
+                        <p
+                          className="text-white text-[9px] truncate w-full text-center px-1"
+                          title={fileObj.file.name}
+                        >
                           {fileObj.file.name}
                         </p>
                         <p className="text-gray-400 text-[8px]">
@@ -242,7 +264,11 @@ const MessageInput = () => {
             />
             <label
               htmlFor="file-input"
-              className={`flex items-center justify-center gap-2 text-white px-5 py-2 bg-[#5e2d64] rounded-full ${uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[#703078]'}`}
+              className={`flex items-center justify-center gap-2 text-white px-5 py-2 bg-[#5e2d64] rounded-full ${
+                uploading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer hover:bg-[#703078]"
+              }`}
             >
               <IoMdAttach className="text-xl" />
               <p>Attach</p>
@@ -251,7 +277,9 @@ const MessageInput = () => {
           <div className="pr-2 py-2">
             <button
               type="submit"
-              disabled={uploading || (!message.trim() && selectedFiles.length === 0)}
+              disabled={
+                uploading || (!message.trim() && selectedFiles.length === 0)
+              }
               className="flex items-center justify-center gap-2 text-white px-5 py-2 bg-[#2d4fb5] rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <p>{uploading ? "Uploading..." : "Send"}</p>
