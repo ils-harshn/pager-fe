@@ -2,9 +2,14 @@ import { useState, useEffect } from "react";
 import socket from "../../socket";
 import { SOCKET_EVENTS } from "../../constants";
 import { roomService } from "../../services";
+import { FaUserTimes } from "react-icons/fa";
 
 const ListConnectedUsers = ({ roomId, loggedUser }) => {
   const [users, setUsers] = useState([]);
+
+  const handleKickUser = (userId) => {
+    socket.emit(SOCKET_EVENTS.KICK_USER, { socketId: userId });
+  };
 
   useEffect(() => {
     const handleUpdateUsers = (data) => {
@@ -48,6 +53,18 @@ const ListConnectedUsers = ({ roomId, loggedUser }) => {
                     {user?.owner ? " (Moderator)" : ""}
                   </p>
                 </div>
+                {loggedUser?.owner && !user?.owner && (
+                  <div className="pr-2">
+                    <button
+                      onClick={() => handleKickUser(user.id)}
+                      className="bg-[#d53703] px-3 py-1 text-white rounded-full text-nowrap text-sm font-bold flex items-center gap-1 hover:bg-[#ff4411]"
+                      title="Kick user from room"
+                    >
+                      <FaUserTimes />
+                      <span>Kick</span>
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           <li className="border-[#B3B3B3] border-b flex justify-between items-center">

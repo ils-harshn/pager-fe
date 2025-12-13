@@ -8,6 +8,7 @@ import PagerSidebar from "./PagerSidebar";
 import LoadingState from "./LoadingState";
 import DisconnectedState from "./DisconnectedState";
 import WaitingForApproval from "./WaitingForApproval";
+import KickedState from "./KickedState";
 
 export {
   Logout,
@@ -20,4 +21,5 @@ export {
   LoadingState,
   DisconnectedState,
   WaitingForApproval,
+  KickedState,
 };

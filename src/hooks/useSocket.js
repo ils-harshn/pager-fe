@@ -7,6 +7,7 @@ const useSocket = (roomId, username) => {
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [user, setUser] = useState(null);
   const [joinRequests, setJoinRequests] = useState([]);
+  const [kicked, setKicked] = useState(false);
 
   useEffect(() => {
     function handleConnect() {
@@ -30,10 +31,16 @@ const useSocket = (roomId, username) => {
       ]);
     }
 
+    function onUserKicked() {
+      setKicked(true);
+      socket.disconnect();
+    }
+
     socket.on(SOCKET_EVENTS.CONNECT, handleConnect);
     socket.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
     socket.on(SOCKET_EVENTS.JOINED_ROOM, hasJoinedRoom);
     socket.on(SOCKET_EVENTS.JOIN_REQUEST, onJoinRequest);
+    socket.on(SOCKET_EVENTS.USER_KICKED, onUserKicked);
 
     socket.connect();
 
@@ -42,6 +49,7 @@ const useSocket = (roomId, username) => {
       socket.off(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
       socket.off(SOCKET_EVENTS.JOINED_ROOM, hasJoinedRoom);
       socket.off(SOCKET_EVENTS.JOIN_REQUEST, onJoinRequest);
+      socket.off(SOCKET_EVENTS.USER_KICKED, onUserKicked);
       socket.disconnect();
     };
   }, [roomId, username]);
@@ -52,6 +60,7 @@ const useSocket = (roomId, username) => {
     user,
     joinRequests,
     setJoinRequests,
+    kicked,
   };
 };
 

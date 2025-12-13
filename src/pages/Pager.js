@@ -9,14 +9,19 @@ import {
   LoadingState,
   DisconnectedState,
   WaitingForApproval,
+  KickedState,
 } from "../components/Pager";
 import { useSocket } from "../hooks";
 
 const Pager = () => {
   const { id, username } = useParams();
   const messagesContainerRef = useRef(null);
-  const { connected, joinedRoom, user, joinRequests, setJoinRequests } =
+  const { connected, joinedRoom, user, joinRequests, setJoinRequests, kicked } =
     useSocket(id, username);
+
+  if (kicked) {
+    return <KickedState />;
+  }
 
   if (!connected) {
     return <LoadingState id={id} username={username} />;

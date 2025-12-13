@@ -6,6 +6,8 @@ const SOCKET_EVENTS = {
   JOIN_REQUEST: "joinrequest",
   JOIN_REQUEST_CANCELLED: "joinrequestcancelled",
   APPROVE_JOIN: "approveJoin",
+  KICK_USER: "kickUser",
+  USER_KICKED: "userKicked",
   MESSAGE: "message",
   UPDATE_USERS: "updateUsers",
 };
