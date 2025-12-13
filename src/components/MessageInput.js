@@ -8,6 +8,8 @@ import {
   MdInsertDriveFile,
   MdKeyboardArrowDown,
 } from "react-icons/md";
+import { BsEmojiSmile } from "react-icons/bs";
+import EmojiPicker from "emoji-picker-react";
 import { SOCKET_EVENTS, API_ENDPOINTS } from "../constants";
 import { isMobileDevice } from "../utils";
 import config from "../config";
@@ -18,8 +20,10 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
@@ -152,6 +156,31 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
     adjustTextareaHeight();
   }, [message]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
+  const handleEmojiClick = (emojiData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+    setShowEmojiPicker(false);
+    textareaRef.current?.focus();
+  };
+
   const isImage = (file) => file.type.startsWith("image/");
 
   return (
@@ -252,7 +281,7 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
           disabled={uploading}
         />
         <div className="flex items-end justify-between border-t border-[#831d8d]">
-          <div className="pl-2 py-2">
+          <div className="pl-2 py-2 flex items-center gap-2">
             <input
               ref={fileInputRef}
               type="file"
@@ -273,6 +302,32 @@ const MessageInput = ({ scrollButton, handleScrollToBottom }) => {
               <IoMdAttach className="text-xl" />
               <p>Attach</p>
             </label>
+            
+            <div className="relative" ref={emojiPickerRef}>
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                disabled={uploading}
+                className={`flex items-center justify-center gap-2 text-white px-3 py-2 bg-[#5e2d64] rounded-full ${
+                  uploading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-[#703078]"
+                }`}
+              >
+                <BsEmojiSmile className="text-xl" />
+              </button>
+              
+              {showEmojiPicker && (
+                <div className="absolute bottom-full left-0 mb-2 z-50">
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiClick}
+                    theme="dark"
+                    width={320}
+                    height={400}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           <div className="pr-2 py-2">
             <button
