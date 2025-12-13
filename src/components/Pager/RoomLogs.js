@@ -8,7 +8,10 @@ import {
   FaUserPlus, 
   FaUserMinus, 
   FaUserTimes, 
-  FaBell 
+  FaBell,
+  FaUserShield,
+  FaDoorClosed,
+  FaUserSlash
 } from "react-icons/fa";
 
 const RoomLogs = () => {
@@ -38,6 +41,12 @@ const RoomLogs = () => {
         return <FaUserMinus className={`${iconClass} text-[#f59e0b]`} />;
       case "user_kicked":
         return <FaUserTimes className={`${iconClass} text-[#ef4444]`} />;
+      case "user_promoted":
+        return <FaUserShield className={`${iconClass} text-[#2563eb]`} />;
+      case "user_demoted":
+        return <FaUserSlash className={`${iconClass} text-[#f59e0b]`} />;
+      case "room_ended":
+        return <FaDoorClosed className={`${iconClass} text-[#dc2626]`} />;
       case "join_request":
         return <FaBell className={`${iconClass} text-[#a855f7]`} />;
       default:

@@ -9,6 +9,7 @@ const useSocket = (roomId, username, status = '') => {
   const [user, setUser] = useState(null);
   const [joinRequests, setJoinRequests] = useState([]);
   const [kicked, setKicked] = useState(false);
+  const [roomEnded, setRoomEnded] = useState(false);
 
   useEffect(() => {
     const avatar = generateAvatar(username);
@@ -32,10 +33,10 @@ const useSocket = (roomId, username, status = '') => {
       setJoinedRoom(true);
     }
 
-    function onJoinRequest({ username, socketId }) {
+    function onJoinRequest({ username, socketId, avatar }) {
       setJoinRequests((prevRequests) => [
         ...prevRequests,
-        { username, socketId },
+        { username, socketId, avatar },
       ]);
     }
 
@@ -44,11 +45,33 @@ const useSocket = (roomId, username, status = '') => {
       socket.disconnect();
     }
 
+    function onRoomEnded() {
+      setRoomEnded(true);
+      socket.disconnect();
+    }
+
+    function onUserPromotedToAdmin({ isAdmin }) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        isAdmin,
+      }));
+    }
+
+    function onUserDemotedFromAdmin({ isAdmin }) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        isAdmin,
+      }));
+    }
+
     socket.on(SOCKET_EVENTS.CONNECT, handleConnect);
     socket.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
     socket.on(SOCKET_EVENTS.JOINED_ROOM, hasJoinedRoom);
     socket.on(SOCKET_EVENTS.JOIN_REQUEST, onJoinRequest);
     socket.on(SOCKET_EVENTS.USER_KICKED, onUserKicked);
+    socket.on(SOCKET_EVENTS.ROOM_ENDED, onRoomEnded);
+    socket.on(SOCKET_EVENTS.USER_PROMOTED_TO_ADMIN, onUserPromotedToAdmin);
+    socket.on(SOCKET_EVENTS.USER_DEMOTED_FROM_ADMIN, onUserDemotedFromAdmin);
 
     socket.connect();
 
@@ -58,6 +81,9 @@ const useSocket = (roomId, username, status = '') => {
       socket.off(SOCKET_EVENTS.JOINED_ROOM, hasJoinedRoom);
       socket.off(SOCKET_EVENTS.JOIN_REQUEST, onJoinRequest);
       socket.off(SOCKET_EVENTS.USER_KICKED, onUserKicked);
+      socket.off(SOCKET_EVENTS.ROOM_ENDED, onRoomEnded);
+      socket.off(SOCKET_EVENTS.USER_PROMOTED_TO_ADMIN, onUserPromotedToAdmin);
+      socket.off(SOCKET_EVENTS.USER_DEMOTED_FROM_ADMIN, onUserDemotedFromAdmin);
       socket.disconnect();
     };
   }, [roomId, username, status]);
@@ -69,6 +95,7 @@ const useSocket = (roomId, username, status = '') => {
     joinRequests,
     setJoinRequests,
     kicked,
+    roomEnded,
   };
 };
 

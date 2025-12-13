@@ -11,6 +11,7 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
   };
 
   const rejectJoin = (socketId) => {
+    socket.emit(SOCKET_EVENTS.REJECT_JOIN, { socketId });
     setJoinRequests((prevRequests) =>
       prevRequests.filter((request) => request.socketId !== socketId)
     );
@@ -22,9 +23,19 @@ const ShowJoinRequests = ({ requests, setJoinRequests }) => {
         prevRequests.filter((request) => request.socketId !== socketId)
       );
     };
+    
+    const handleJoinRequestResolved = ({ socketId }) => {
+      setJoinRequests((prevRequests) =>
+        prevRequests.filter((request) => request.socketId !== socketId)
+      );
+    };
+    
     socket.on(SOCKET_EVENTS.JOIN_REQUEST_CANCELLED, handleJoinRequestCancelled);
+    socket.on(SOCKET_EVENTS.JOIN_REQUEST_RESOLVED, handleJoinRequestResolved);
+    
     return () => {
       socket.off(SOCKET_EVENTS.JOIN_REQUEST_CANCELLED, handleJoinRequestCancelled);
+      socket.off(SOCKET_EVENTS.JOIN_REQUEST_RESOLVED, handleJoinRequestResolved);
     };
   }, []);
 

@@ -24,7 +24,7 @@ const PagerSidebar = ({ roomId, user, joinRequests, setJoinRequests }) => {
         </div>
       </div>
       <ListConnectedUsers roomId={roomId} loggedUser={user} />
-      {user?.owner && joinRequests?.length ? (
+      {(user?.owner || user?.isAdmin) && joinRequests?.length ? (
         <ShowJoinRequests
           requests={joinRequests}
           setJoinRequests={setJoinRequests}

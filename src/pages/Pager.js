@@ -10,6 +10,7 @@ import {
   DisconnectedState,
   WaitingForApproval,
   KickedState,
+  RoomEndedState,
 } from "../components/Pager";
 import { useSocket } from "../hooks";
 
@@ -18,8 +19,12 @@ const Pager = () => {
   const [searchParams] = useSearchParams();
   const status = searchParams.get('status') || '';
   const messagesContainerRef = useRef(null);
-  const { connected, joinedRoom, user, joinRequests, setJoinRequests, kicked } =
+  const { connected, joinedRoom, user, joinRequests, setJoinRequests, kicked, roomEnded } =
     useSocket(id, username, status);
+
+  if (roomEnded) {
+    return <RoomEndedState />;
+  }
 
   if (kicked) {
     return <KickedState />;
