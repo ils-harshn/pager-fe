@@ -1,6 +1,6 @@
 const config = {
-  uri: process.env.REACT_APP_API_URL,
-  //   uri: "https://pager-be.onrender.com",
+  uri: process.env.REACT_APP_API_URL || "http://localhost:8000",
 };
 
 export default config;
+

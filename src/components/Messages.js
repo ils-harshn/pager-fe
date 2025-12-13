@@ -1,5 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import socket from "../socket";
+import { SOCKET_EVENTS } from "../constants";
+import { formatTime, groupMessages } from "../utils";
 
 function Messages({ messagesContainerRef }) {
   const [messages, setMessages] = useState([]);
@@ -29,57 +31,16 @@ function Messages({ messagesContainerRef }) {
       ]);
 
       if (wasAtBottom) {
-        // Use setTimeout to wait for DOM update
         setTimeout(() => {
           scrollToBottom();
         }, 0);
       }
     }
-    socket.on("message", handleMessage);
+    socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
     return () => {
-      socket.off("message", handleMessage);
+      socket.off(SOCKET_EVENTS.MESSAGE, handleMessage);
     };
   }, []);
-
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const time = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    const dateStr = date.toLocaleDateString([], {
-      month: "short",
-      day: "numeric",
-    });
-    return { time, dateStr };
-  };
-
-  const groupMessages = (messages) => {
-    const groups = [];
-    let currentGroup = null;
-
-    messages.forEach((message) => {
-      const shouldGroup =
-        currentGroup &&
-        currentGroup.username === message.username &&
-        new Date(message.at).getTime() - new Date(currentGroup.at).getTime() <
-          1 * 60 * 1000;
-      if (shouldGroup) {
-        currentGroup.messages.push(message);
-      } else {
-        currentGroup = {
-          id: message.id,
-          username: message.username,
-          at: message.at,
-          messages: [message],
-        };
-        groups.push(currentGroup);
-      }
-    });
-
-    return groups;
-  };
 
   if (!messages?.length) {
     return (

@@ -1,6 +1,8 @@
 import socket from "../socket";
 import { useState, useRef, useEffect } from "react";
 import { IoIosSend } from "react-icons/io";
+import { SOCKET_EVENTS } from "../constants";
+import { isMobileDevice } from "../utils";
 
 const MessageInput = () => {
   const MAX_HEIGHT = 400;
@@ -10,15 +12,9 @@ const MessageInput = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit("message", message);
+      socket.emit(SOCKET_EVENTS.MESSAGE, message);
       setMessage("");
     }
-  };
-
-  const isMobileDevice = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
   };
 
   const handleKeyDown = (e) => {
